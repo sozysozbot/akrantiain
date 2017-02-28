@@ -2,4 +2,4 @@
 import Akrantiain.Lexer
 main :: IO ()
 main = do
-  print "Hello, World!"
+  parseTest conversion "\"a\" consonant ^ \"b\" -> /a/ $2 $3 /v/"
