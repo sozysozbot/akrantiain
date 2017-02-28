@@ -6,6 +6,7 @@ module Akrantiain.Lexer
 ,quoted_string
 ,slash_string
 ,conversion
+,define
 ) where
 
 import Text.Parsec 
@@ -40,6 +41,23 @@ Sentence(Conversion) : "a" consonant ^ "b" -> /a/ $2 $3 /v/
 Sentence(Define) : consonant = "a" | "b" "d" | cons2 | co "c" co 
 -}
 
+
+comment :: Parser ()
+comment = try $ char '#' >> skipMany (noneOf "\n") >> char '\n' >> return ()
+
+-- consonant = "a" | "b" "d" | cons2 | co "c" co 
+define :: Parser Sentence
+define = try $ do
+  spaces
+  ident <- identifier
+  spaces
+  char '='
+  spaces
+  let candidates = try $ many(try $ try candidate <* spaces)
+  cands_arr <- try candidates `sepBy` try(char '|' >> spaces) 
+  sent_terminate
+  return $ Define ident cands_arr
+
 sent_terminate :: Parser ()
 sent_terminate = eof <|> (oneOf ";\n" >> return ())
   
@@ -52,22 +70,21 @@ conversion :: Parser Sentence
 conversion = try $ do 
   spaces
   let ortho = boundary <|> fmap Pos candidate <|> try(fmap Neg $ char '!' >> candidate)
-  orthos <- many(ortho <* spaces)
+  orthos <- many(try$ortho <* spaces)
   string "->"
   spaces
   let phoneme = dollar_int <|> slash_string
-  phonemes <- many(phoneme <* spaces)
+  phonemes <- many(try$phoneme <* spaces)
   sent_terminate
   return $ Conversion orthos phonemes
 
 
 sentence :: Parser Sentence
-sentence = try conversion <|> try define 
+sentence = conversion <|> define 
 
 
 
-define :: Parser Sentence
-define = do undefined
+
 
 
 boundary :: Parser Orthography
