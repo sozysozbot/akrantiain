@@ -7,6 +7,7 @@ module Akrantiain.Lexer
 ,slash_string
 ,conversion
 ,define
+,sentences
 ) where
 
 import Text.Parsec 
@@ -15,6 +16,8 @@ import Control.Applicative ((<$>),(*>),(<*),pure)
 import Data.Char (ord)
 import Text.Parsec (char, oneOf, (<|>), parseTest)
 import Text.Parsec.String (Parser)
+import Data.Maybe (catMaybes)
+import Control.Monad(void)
 -- import Prelude hiding (undefined)
 
 sample :: String
@@ -42,8 +45,14 @@ Sentence(Define) : consonant = "a" | "b" "d" | cons2 | co "c" co
 -}
 
 
+sentences :: Parser [Sentence]
+sentences = do
+ sents <- many (try(comment >> return Nothing) <|> try(fmap Just sentence))
+ eof
+ return $ catMaybes sents
+
 comment :: Parser ()
-comment = try $ char '#' >> skipMany (noneOf "\n") >> char '\n' >> return ()
+comment = try $ char '#' >> skipMany (noneOf "\n") >> (eof <|> void(char '\n'))
 
 -- consonant = "a" | "b" "d" | cons2 | co "c" co 
 define :: Parser Sentence
@@ -59,7 +68,7 @@ define = try $ do
   return $ Define ident cands_arr
 
 sent_terminate :: Parser ()
-sent_terminate = eof <|> (oneOf ";\n" >> return ())
+sent_terminate = eof <|> void(oneOf ";\n") <|> comment
   
 
 candidate :: Parser Candidate
