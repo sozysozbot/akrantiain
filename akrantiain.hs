@@ -10,7 +10,9 @@ main = do
  case args of
   []    -> putStrLn "mi'e .akrantiain."
   (fname:_) -> do
-   input <- readFile fname
+   handle <- openFile fname ReadMode 
+   hSetEncoding handle utf8
+   input <- hGetContents handle
    case runParser sentences () fname input of
     Left err -> hPutStrLn stderr $ show err
     Right a -> print a
