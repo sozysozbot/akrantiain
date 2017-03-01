@@ -1,5 +1,19 @@
 --{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 import Akrantiain.Lexer
+import Text.Parsec
+import System.Environment
+import System.IO
+
 main :: IO ()
 main = do
-  parseTest sentences "\"a#\" consonant ^ \"b\" -> /a/ $2 $3 /v/; consonant = \"a\" | c d | \"b\" \"d\" | cons2 | co \"c\" co #blahblah" 
+ args <- getArgs
+ case args of
+  []    -> putStrLn "mi'e .akrantiain."
+  (fname:_) -> do
+   input <- readFile fname
+   case runParser sentences () fname input of
+    Left err -> hPutStrLn stderr $ show err
+    Right a -> print a
+
+
+
