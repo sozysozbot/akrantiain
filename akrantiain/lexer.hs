@@ -56,11 +56,13 @@ comment = try $ char '#' >> skipMany (noneOf "\n") >> (eof <|> void(char '\n'))
 
 -- consonant = "a" | "b" "d" | cons2 | co "c" co 
 define :: Parser Sentence
-define = try $ do
-  spaces
-  ident <- identifier
-  spaces
-  char '='
+define = do
+  ident <- try $ do
+   spaces
+   ident' <- identifier
+   spaces
+   char '='
+   return ident'
   spaces
   let candidates = try $ many(try $ try candidate <* spaces)
   cands_arr <- try candidates `sepBy` try(char '|' >> spaces) 
@@ -76,11 +78,13 @@ candidate = try(fmap Left quoted_string) <|> try(fmap Right identifier)
   
 
 conversion :: Parser Sentence
-conversion = try $ do 
-  spaces
-  let ortho = boundary <|> fmap Pos candidate <|> try(fmap Neg $ char '!' >> candidate)
-  orthos <- many(try$ortho <* spaces)
-  string "->"
+conversion = do 
+  orthos <- try $ do
+   spaces
+   let ortho = boundary <|> fmap Pos candidate <|> try(fmap Neg $ char '!' >> candidate)
+   orthos' <- many(try$ortho <* spaces)
+   string "->"
+   return orthos'
   spaces
   let phoneme = dollar_int <|> slash_string
   phonemes <- many(try$phoneme <* spaces)
