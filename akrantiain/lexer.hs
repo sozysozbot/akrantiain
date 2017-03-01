@@ -56,7 +56,7 @@ sentences = do
  return $ catMaybes sents
 
 comment :: Parser ()
-comment = try $ char '#' >> skipMany (noneOf "\n") >> (eof <|> void(char '\n'))
+comment = void(try $ spaces' >> oneOf ";\n") <|> (char '#' >> skipMany (noneOf "\n") >> (eof <|> void(char '\n')))
 
 -- consonant = "a" | "b" "d" | cons2 | co "c" co 
 define :: Parser Sentence
@@ -74,7 +74,7 @@ define = do
   return $ Define ident cands_arr
 
 sent_terminate :: Parser ()
-sent_terminate = eof <|> void(oneOf ";\n") <|> comment
+sent_terminate = eof <|> comment
   
 
 candidate :: Parser Candidate
