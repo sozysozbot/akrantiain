@@ -13,7 +13,7 @@ module Akrantiain.Lexer
 import Text.Parsec 
 
 import Control.Applicative ((<$>),(*>),(<*),pure)
-import Data.Char (ord)
+import Data.Char (ord, isSpace)
 import Text.Parsec (char, oneOf, (<|>), parseTest)
 import Text.Parsec.String (Parser)
 import Data.Maybe (catMaybes)
@@ -44,6 +44,10 @@ Sentence(Conversion) : "a" consonant ^ "b" -> /a/ $2 $3 /v/
 Sentence(Define) : consonant = "a" | "b" "d" | cons2 | co "c" co 
 -}
 
+spaces' :: Parser ()
+spaces' = skipMany $ satisfy (\a -> isSpace a && a /= '\n')
+
+
 
 sentences :: Parser [Sentence]
 sentences = do
@@ -58,14 +62,14 @@ comment = try $ char '#' >> skipMany (noneOf "\n") >> (eof <|> void(char '\n'))
 define :: Parser Sentence
 define = do
   ident <- try $ do
-   spaces
+   spaces'
    ident' <- identifier
-   spaces
+   spaces'
    char '='
    return ident'
-  spaces
-  let candidates = try $ many(try $ try candidate <* spaces)
-  cands_arr <- try candidates `sepBy` try(char '|' >> spaces) 
+  spaces'
+  let candidates = try $ many(try $ try candidate <* spaces')
+  cands_arr <- try candidates `sepBy` try(char '|' >> spaces') 
   sent_terminate
   return $ Define ident cands_arr
 
@@ -80,14 +84,14 @@ candidate = try(fmap Left quoted_string) <|> try(fmap Right identifier)
 conversion :: Parser Sentence
 conversion = do 
   orthos <- try $ do
-   spaces
+   spaces'
    let ortho = boundary <|> fmap Pos candidate <|> try(fmap Neg $ char '!' >> candidate)
-   orthos' <- many(try$ortho <* spaces)
+   orthos' <- many(try$ortho <* spaces')
    string "->"
    return orthos'
-  spaces
+  spaces'
   let phoneme = dollar_int <|> slash_string
-  phonemes <- many(try$phoneme <* spaces)
+  phonemes <- many(try$phoneme <* spaces')
   sent_terminate
   return $ Conversion orthos phonemes
 
