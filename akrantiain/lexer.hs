@@ -138,5 +138,5 @@ parser = do
   return result
   
 identifier :: Parser Identifier
-identifier = fmap Id $ (:) <$> letter <*> many alphaNum 
+identifier = fmap Id $ (:) <$> letter <*> many (alphaNum <|> char '_')
 
