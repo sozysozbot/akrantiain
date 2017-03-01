@@ -32,7 +32,7 @@ vowel = "a" | "i" | "u" | "e" | "o" | "y"
 "y" vowel -> /ɥ/ $2
 "y" ^ -> /ɥ/
 vowel "r" -> $1 /ː/
-"j" !vowel -> "i"
+"j" !vowel -> /i/
 vowel "i" !"r" -> $1 /j/
 vowel "u" !"r" -> $1 /w/
 
@@ -42,7 +42,7 @@ vowel "u" !"r" -> $1 /w/
 
 "'" -> //
 
-palat = "dz", "x", "ch"
+palat = "dz" | "x" | "ch"
 palat "i" vowel -> $1 $3
 
 "t" "z" -> $2 $2;
