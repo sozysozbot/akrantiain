@@ -1,4 +1,4 @@
---{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
+{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 
 module Akrantiain.Lexer
 (parseTest
@@ -12,16 +12,14 @@ module Akrantiain.Lexer
 
 import Text.Parsec 
 
-import Control.Applicative ((<$>),(*>),(<*),pure)
-import Data.Char (ord, isSpace)
+import Control.Applicative ((<$>),(<*))
+import Data.Char (isSpace)
 import Text.Parsec (char, oneOf, (<|>), parseTest)
 import Text.Parsec.String (Parser)
 import Data.Maybe (catMaybes)
 import Control.Monad(void)
--- import Prelude hiding (undefined)
+import Prelude hiding (undefined)
 
-sample :: String
-sample = "\"a\" -> /A/;\"b\" -> /B/\n\"c\" -> /C/;\n\"o\" -> /O/\n\"oo\" -> /8/"
 
 type Candidates = [Candidate]
 data Sentence = Conversion [Orthography] [Phoneme] | Define Identifier [Candidates] deriving(Show, Eq, Ord)
@@ -138,11 +136,6 @@ dollar_int = try $ do
   num <- many digit
   return $ Dollar(read num)
 
-parser :: Parser [Sentence]
-parser = do 
-  result <- many sentence
-  eof
-  return result
   
 identifier :: Parser Identifier
 identifier = fmap Id $ (:) <$> letter <*> many (alphaNum <|> char '_')
