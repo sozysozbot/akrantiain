@@ -44,6 +44,13 @@ Sentence(Conversion) : "a" consonant ^ "b" -> /a/ $2 $3 /v/
 Sentence(Define) : consonant = "a" | "b" "d" | cons2 | co "c" co 
 -}
 
+backquoted_string :: Parser [Orthography]
+backquoted_string = do
+  char '`'
+  str <- many(noneOf "`\n")
+  char '`'
+  return [Boundary, (Pos . Left . Quote) str, Boundary] 
+
 spaces' :: Parser ()
 spaces' = skipMany $ satisfy (\a -> isSpace a && a /= '\n')
 
@@ -85,10 +92,10 @@ conversion :: Parser Sentence
 conversion = do 
   orthos <- try $ do
    spaces'
-   let ortho = boundary <|> fmap Pos candidate <|> try(fmap Neg $ char '!' >> candidate)
+   let ortho = fmap (:[]) (boundary <|> fmap Pos candidate <|> try(fmap Neg $ char '!' >> candidate)) <|> backquoted_string
    orthos' <- many(try$ortho <* spaces')
    string "->"
-   return orthos'
+   return $ concat orthos'
   spaces'
   let phoneme = dollar_int <|> slash_string
   phonemes <- many(try$phoneme <* spaces')
