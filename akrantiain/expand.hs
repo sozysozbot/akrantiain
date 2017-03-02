@@ -23,9 +23,21 @@ expand sents = do
  
 
 candids_to_quotes :: M.Map Identifier [Candidates] -> Either SemanticError (M.Map Identifier [Quote])
-candids_to_quotes old_map = do 
- map' <- undefined old_map
- return map'
+candids_to_quotes old_map = c_to_q2 (old_map, M.empty)
+
+type Temp = (M.Map Identifier [Candidates], M.Map Identifier [Quote]) 
+c_to_q2 :: Temp -> Either SemanticError (M.Map Identifier [Quote])
+c_to_q2 (cand_map, quot_map) = case M.lookupGE (Id "") cand_map of 
+ Nothing -> return quot_map -- Any identifier is greater than (Id ""); if none, the cand_map must be empty
+ Just (ident, candids) -> do
+  ident_target {-:: [Quote]-} <- foo ident candids cand_map quot_map
+  let cand_map' = M.delete ident cand_map
+  let quot_map' = M.insert ident ident_target quot_map
+  c_to_q2 (cand_map', quot_map')
+
+
+foo = undefined
+  
 
 split :: [Sentence] -> Either SemanticError (S.Set([Orthography],[Phoneme]),M.Map Identifier [Candidates])
 split [] = Right (S.empty, M.empty)
