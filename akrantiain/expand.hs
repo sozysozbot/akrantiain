@@ -17,8 +17,13 @@ data Orthography' = Boundary' | Neg' Quote | Pos' Quote deriving(Show, Eq, Ord)
 
 expand :: [Sentence] -> Either SemanticError [Conv2]
 expand sents = do 
- result <- split sents
- undefined result
+ (orthoset, identmap) <- split sents
+ func <- map_to_func identmap
+ undefined func orthoset
+ 
+
+map_to_func :: M.Map Identifier [Candidates] -> Either SemanticError (Identifier -> Maybe [Quote])
+map_to_func = undefined
 
 split :: [Sentence] -> Either SemanticError (S.Set([Orthography],[Phoneme]),M.Map Identifier [Candidates])
 split [] = Right (S.empty, M.empty)
