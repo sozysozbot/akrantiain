@@ -30,13 +30,15 @@ c_to_q2 :: Temp -> Either SemanticError (M.Map Identifier [Quote])
 c_to_q2 (cand_map, quot_map) = case M.lookupGE (Id "") cand_map of 
  Nothing -> return quot_map -- Any identifier is greater than (Id ""); if none, the cand_map must be empty
  Just (ident, candids) -> do
-  ident_target {-:: [Quote]-} <- foo ident candids cand_map quot_map
+  ident_target <- get_target
   let cand_map' = M.delete ident cand_map
   let quot_map' = M.insert ident ident_target quot_map
   c_to_q2 (cand_map', quot_map')
+   where 
+    get_target :: Either SemanticError [Quote]
+    get_target = undefined ident candids cand_map quot_map
 
 
-foo = undefined
   
 
 split :: [Sentence] -> Either SemanticError (S.Set([Orthography],[Phoneme]),M.Map Identifier [Candidates])
