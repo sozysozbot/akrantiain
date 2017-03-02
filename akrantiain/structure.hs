@@ -1,7 +1,7 @@
 --{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 
 module Akrantiain.Structure
-(Candidates
+(Candidates(..)
 ,Sentence(..)
 ,Orthography(..)
 ,Phoneme(..)
@@ -10,7 +10,7 @@ module Akrantiain.Structure
 ,Quote(..)
 ) where
 
-type Candidates = [Candidate]
+newtype Candidates = C [Candidate] deriving(Show, Eq, Ord)
 data Sentence = Conversion [Orthography] [Phoneme] | Define Identifier [Candidates] deriving(Show, Eq, Ord)
 data Orthography = Boundary | Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)
 data Phoneme = Dollar Int | Slash String deriving(Show, Eq, Ord)

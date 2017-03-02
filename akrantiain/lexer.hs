@@ -53,7 +53,7 @@ define = do
    char '='
    return ident'
   spaces'
-  let candidates = try $ many(try $ try candidate <* spaces')
+  let candidates = fmap C $ try $ many(try $ try candidate <* spaces')
   cands_arr <- try candidates `sepBy` try(char '|' >> spaces') 
   sent_terminate
   return $ Define ident cands_arr
