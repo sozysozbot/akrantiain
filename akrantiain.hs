@@ -1,8 +1,9 @@
-{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
+--{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 import Akrantiain.Lexer
 import Text.Parsec
 import System.Environment
 import System.IO
+import Akrantiain.Expand
 
 main :: IO ()
 main = do
