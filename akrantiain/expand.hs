@@ -14,6 +14,7 @@ import qualified Data.Map as M
 data SemanticError = E {errNum :: Int, errStr :: String} deriving(Show, Eq, Ord)
 data Conv2 = Conv [Orthography'] [Phoneme] deriving(Show, Eq, Ord)
 data Orthography' = Boundary' | Neg' Quote | Pos' Quote deriving(Show, Eq, Ord)
+newtype Quotes = Q [Quote] deriving(Show, Eq, Ord)
 
 expand :: [Sentence] -> Either SemanticError [Conv2]
 expand sents = do 
@@ -22,11 +23,11 @@ expand sents = do
  undefined newMap orthoset
  
 
-candids_to_quotes :: M.Map Identifier [Candidates] -> Either SemanticError (M.Map Identifier [Quote])
+candids_to_quotes :: M.Map Identifier [Candidates] -> Either SemanticError (M.Map Identifier [Quotes])
 candids_to_quotes old_map = c_to_q2 (old_map, M.empty)
 
-type Temp = (M.Map Identifier [Candidates], M.Map Identifier [Quote]) 
-c_to_q2 :: Temp -> Either SemanticError (M.Map Identifier [Quote])
+type Temp = (M.Map Identifier [Candidates], M.Map Identifier [Quotes]) 
+c_to_q2 :: Temp -> Either SemanticError (M.Map Identifier [Quotes])
 c_to_q2 (cand_map, quot_map) = case M.lookupGE (Id "") cand_map of 
  Nothing -> return quot_map -- Any identifier is greater than (Id ""); if none, the cand_map must be empty
  Just (ident, candids) -> do
@@ -35,7 +36,7 @@ c_to_q2 (cand_map, quot_map) = case M.lookupGE (Id "") cand_map of
   let quot_map' = M.insert ident ident_target quot_map
   c_to_q2 (cand_map', quot_map')
    where 
-    get_target :: Either SemanticError [Quote]
+    get_target :: Either SemanticError [Quotes]
     get_target = undefined ident candids cand_map quot_map
 
 
