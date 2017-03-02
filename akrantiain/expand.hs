@@ -10,37 +10,17 @@ module Akrantiain.Expand
 import Akrantiain.Structure
 import qualified Data.Set as S
 import qualified Data.Map as M
-
-data SemanticError = E {errNum :: Int, errStr :: String} deriving(Show, Eq, Ord)
+import Akrantiain.Resolve_definitions
 data Conv2 = Conv [Orthography'] [Phoneme] deriving(Show, Eq, Ord)
 data Orthography' = Boundary' | Neg' Quote | Pos' Quote deriving(Show, Eq, Ord)
-newtype Quotes = Q [Quote] deriving(Show, Eq, Ord)
+
 
 expand :: [Sentence] -> Either SemanticError [Conv2]
 expand sents = do 
  (orthoset, identmap) <- split sents
  newMap <- candids_to_quotes identmap
  undefined newMap orthoset
- 
 
-candids_to_quotes :: M.Map Identifier [Candidates] -> Either SemanticError (M.Map Identifier [Quotes])
-candids_to_quotes old_map = c_to_q2 (old_map, M.empty)
-
-type Temp = (M.Map Identifier [Candidates], M.Map Identifier [Quotes]) 
-c_to_q2 :: Temp -> Either SemanticError (M.Map Identifier [Quotes])
-c_to_q2 (cand_map, quot_map) = case M.lookupGE (Id "") cand_map of 
- Nothing -> return quot_map -- Any identifier is greater than (Id ""); if none, the cand_map must be empty
- Just (ident, candids) -> do
-  ident_target <- get_target
-  let cand_map' = M.delete ident cand_map
-  let quot_map' = M.insert ident ident_target quot_map
-  c_to_q2 (cand_map', quot_map')
-   where 
-    get_target :: Either SemanticError [Quotes]
-    get_target = undefined ident candids cand_map quot_map
-
-
-  
 
 split :: [Sentence] -> Either SemanticError (S.Set([Orthography],[Phoneme]),M.Map Identifier [Candidates])
 split [] = Right (S.empty, M.empty)
