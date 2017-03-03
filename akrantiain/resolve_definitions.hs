@@ -40,12 +40,12 @@ reduce_1 ident@(Id i) (cand_map, quot_map, stack) = case M.lookup ident cand_map
     [] -> do
      let resos_list = [ R[res | Res res <- candids] | C candids <- candids_list]
      return (M.delete ident cand_map, M.insert ident resos_list quot_map, stack)
-    (x:_) -> do 
-     (cand_map', quot_map', _) <- reduce_1 x (cand_map, quot_map, ident:stack)
-     let resos_list = fromJust(x `M.lookup` quot_map)
-     let candids_list' = replace_candids_list x resos_list candids_list
-     let cand_map'' = M.insert ident candids_list' cand_map'
-     reduce_1 ident (cand_map'', quot_map', stack)
+    (x:_) -> do -- move x and resolve x
+     (cand_map', quot_map', _) <- reduce_1 x (cand_map, quot_map, ident:stack) -- move x; x cannot use ident
+     let resos_list = fromJust(x `M.lookup` quot_map') -- x is moved to quot_map'
+     let candids_list' = replace_candids_list x resos_list candids_list -- replace (x --> resos_list) within ident's candids_list
+     let cand_map'' = M.insert ident candids_list' cand_map' -- update ident's info
+     reduce_1 ident (cand_map'', quot_map', stack) -- recursion; x is moved
 
 replace_candids_list :: Identifier -> [Resolveds] -> [Candidates] -> [Candidates]
 replace_candids_list x resos_list candids_list = 
