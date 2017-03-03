@@ -66,23 +66,18 @@ replace before after = concatMap f where
 --  let f k = if k == Ide x then resos_list else 
 
 
-candids_to_quotes = undefined 
-{-
+
+
+
+
+
 candids_to_quotes :: M.Map Identifier [Candidates] -> Either SemanticError (M.Map Identifier [Resolveds])
 candids_to_quotes old_map = c_to_q2 (old_map, M.empty)
 
 
-c_to_q2 :: Temp -> Either SemanticError (M.Map Identifier [Resolveds])
+c_to_q2 :: (M.Map Identifier [Candidates], M.Map Identifier [Resolveds]) -> Either SemanticError (M.Map Identifier [Resolveds])
 c_to_q2 (cand_map, quot_map) = case M.lookupGE (Id "") cand_map of 
  Nothing -> return quot_map -- Any identifier is greater than (Id ""); if none, the cand_map must be empty
- Just (ident, candids) -> do
-  ident_target <- get_target
-  let cand_map' = M.delete ident cand_map
-  let quot_map' = M.insert ident ident_target quot_map
+ Just (ident, _) -> do
+  (cand_map', quot_map', _) <- reduce_1 ident (cand_map, quot_map, [])
   c_to_q2 (cand_map', quot_map')
-   where 
-    get_target :: Either SemanticError [Resolveds]
-    get_target = undefined ident candids cand_map quot_map
-
--}
-  
