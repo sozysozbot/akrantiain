@@ -57,10 +57,10 @@ replace_candids_list x resos_list candids_list =
 -- f [conson, vowel] = [C[conson, "a"], C[conson, "i", "u"]]
 
 replace :: (Eq a) => a -> [a] -> [a] -> [a]
-replace _ _ [] = []
-replace before after (x:xs)
- | x == before = after ++ replace before after xs
- | otherwise = x : replace before after xs
+replace before after = concatMap f where
+ f u
+  | u == before = after
+  | otherwise = [u]
  
 -- data Candidate = Res Resolved | Ide Identifier 
 --  let f k = if k == Ide x then resos_list else 
