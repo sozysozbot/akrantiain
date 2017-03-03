@@ -28,11 +28,11 @@ vowel = "a" | "i"; conson = "b" | ^ "c"; syll = "b" "a" | ^ "c" "a" | "b" "i" | 
 
 
 
-candids_to_quotes :: M.Map Identifier [Candidates] -> Either SemanticError (M.Map Identifier [Quote])
+candids_to_quotes :: M.Map Identifier [Candidates] -> Either SemanticError (M.Map Identifier [Resolveds])
 candids_to_quotes old_map = c_to_q2 (old_map, M.empty)
 
-type Temp = (M.Map Identifier [Candidates], M.Map Identifier [Quote]) 
-c_to_q2 :: Temp -> Either SemanticError (M.Map Identifier [Quote])
+type Temp = (M.Map Identifier [Candidates], M.Map Identifier [Resolveds]) 
+c_to_q2 :: Temp -> Either SemanticError (M.Map Identifier [Resolveds])
 c_to_q2 (cand_map, quot_map) = case M.lookupGE (Id "") cand_map of 
  Nothing -> return quot_map -- Any identifier is greater than (Id ""); if none, the cand_map must be empty
  Just (ident, candids) -> do
@@ -41,7 +41,7 @@ c_to_q2 (cand_map, quot_map) = case M.lookupGE (Id "") cand_map of
   let quot_map' = M.insert ident ident_target quot_map
   c_to_q2 (cand_map', quot_map')
    where 
-    get_target :: Either SemanticError [Quote]
+    get_target :: Either SemanticError [Resolveds]
     get_target = undefined ident candids cand_map quot_map
 
 
