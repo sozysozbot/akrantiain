@@ -5,16 +5,16 @@ module Akrantiain.Structure
 ,Sentence(..)
 ,Orthography(..)
 ,Phoneme(..)
-,Candidate
+,Candidate(..)
 ,Identifier(..)
 ,Quote(..)
 ) where
 
 newtype Candidates = C [Candidate] deriving(Show, Eq, Ord)
 data Sentence = Conversion [Orthography] [Phoneme] | Define Identifier [Candidates] deriving(Show, Eq, Ord)
-data Orthography = Boundary | Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)
+data Orthography = Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)
 data Phoneme = Dollar Int | Slash String deriving(Show, Eq, Ord)
-type Candidate = Either Quote Identifier
+data Candidate = Boundary | Fixme (Either Quote Identifier ) deriving(Show, Eq, Ord)
 newtype Identifier = Id String deriving(Show, Eq, Ord)
 newtype Quote = Quote String deriving(Show, Eq, Ord)
 {-
