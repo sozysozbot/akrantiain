@@ -43,15 +43,15 @@ reduce_1 ident@(Id i) (cand_map, quot_map, stack) = case M.lookup ident cand_map
     (x:_) -> do 
      (cand_map', quot_map', _) <- reduce_1 x (cand_map, quot_map, ident:stack)
      let resos_list = fromJust(x `M.lookup` quot_map)
-     undefined resos_list cand_map' quot_map'
+     let candids_list' = replace_candids_list x resos_list candids_list
+     let cand_map'' = M.insert ident candids_list' cand_map'
+     reduce_1 ident (cand_map'', quot_map', stack)
 
 replace_candids_list :: Identifier -> [Resolveds] -> [Candidates] -> [Candidates]
-replace_candids_list x resos_list candids_list = do
- let k = [ map Res reso_list | R reso_list <- resos_list]
- let f u = [ C $ replace (Ide x) k' u | k' <- k]
- concat [ f candids | C candids <- candids_list] -- candids :: [Candidate]
-
-
+replace_candids_list x resos_list candids_list = 
+ let {k = [ map Res reso_list | R reso_list <- resos_list];
+      f u = [ C $ replace (Ide x) k' u | k' <- k]} in
+  concat [ f candids | C candids <- candids_list] -- candids :: [Candidate]
 -- Ide vowel -> [ R["a"], R["i", "u"] ] -> [C [conson, vowel] ,C [vowel]] -> [C[conson, "a"], C[conson, "i", "u"], C["a"], C["i","u"]]
 -- k = [["a"], ["i","u"]]
 -- f [conson, vowel] = [C[conson, "a"], C[conson, "i", "u"]]
