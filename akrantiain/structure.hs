@@ -11,7 +11,7 @@ module Akrantiain.Structure
 ,Quote(..)
 ,Resolveds(..)
 ) where
-
+import Prelude hiding (undefined)
 newtype Resolveds = R [Resolved]
 newtype Candidates = C [Candidate] deriving(Show, Eq, Ord)
 data Sentence = Conversion [Orthography] [Phoneme] | Define Identifier [Candidates] deriving(Show, Eq, Ord)

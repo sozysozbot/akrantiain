@@ -9,6 +9,7 @@ import Akrantiain.Structure
 -- import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.Maybe(fromJust)
+import Prelude hiding (undefined)
 data SemanticError = E {errNum :: Int, errStr :: String} deriving(Show, Eq, Ord)
 
 
