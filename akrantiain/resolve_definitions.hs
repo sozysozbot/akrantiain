@@ -8,6 +8,7 @@ module Akrantiain.Resolve_definitions
 import Akrantiain.Structure
 -- import qualified Data.Set as S
 import qualified Data.Map as M
+import Data.Maybe(fromJust)
 data SemanticError = E {errNum :: Int, errStr :: String} deriving(Show, Eq, Ord)
 
 
@@ -39,7 +40,30 @@ reduce_1 ident@(Id i) (cand_map, quot_map, stack) = case M.lookup ident cand_map
     [] -> do
      let resos_list = [ R[res | Res res <- candids] | C candids <- candids_list]
      return (M.delete ident cand_map, M.insert ident resos_list quot_map, stack)
-    (x:xs) -> undefined
+    (x:_) -> do 
+     (cand_map', quot_map', _) <- reduce_1 x (cand_map, quot_map, ident:stack)
+     let resos_list = fromJust(x `M.lookup` quot_map)
+     undefined resos_list cand_map' quot_map'
+
+replace_candids_list :: Identifier -> [Resolveds] -> [Candidates] -> [Candidates]
+replace_candids_list x resos_list candids_list = do
+ let k = [ map Res reso_list | R reso_list <- resos_list]
+ let f u = [ C $ replace (Ide x) k' u | k' <- k]
+ concat [ f candids | C candids <- candids_list] -- candids :: [Candidate]
+
+
+-- Ide vowel -> [ R["a"], R["i", "u"] ] -> [C [conson, vowel] ,C [vowel]] -> [C[conson, "a"], C[conson, "i", "u"], C["a"], C["i","u"]]
+-- k = [["a"], ["i","u"]]
+-- f [conson, vowel] = [C[conson, "a"], C[conson, "i", "u"]]
+
+replace :: (Eq a) => a -> [a] -> [a] -> [a]
+replace _ _ [] = []
+replace before after (x:xs)
+ | x == before = after ++ replace before after xs
+ | otherwise = x : replace before after xs
+ 
+-- data Candidate = Res Resolved | Ide Identifier 
+--  let f k = if k == Ide x then resos_list else 
 
 
 candids_to_quotes = undefined 
