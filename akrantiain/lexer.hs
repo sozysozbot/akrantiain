@@ -26,7 +26,7 @@ backquoted_string = do
   char '`'
   str <- many(noneOf "`\n")
   char '`'
-  return $ fmap Pos [Boundary, (Quo . Quote) str, Boundary] 
+  return $ fmap (Pos . Res) [Boundary, (Quo . Quote) str, Boundary] 
 
 spaces' :: Parser ()
 spaces' = skipMany $ satisfy (\a -> isSpace a && a /= '\n')
@@ -62,7 +62,7 @@ sent_terminate = eof <|> comment
   
 
 candidate :: Parser Candidate
-candidate = try(fmap Quo quoted_string) <|> try(fmap Ide identifier)
+candidate = try(fmap (Res . Quo) quoted_string) <|> try(fmap Ide identifier)
   
 
 conversion :: Parser Sentence
@@ -89,7 +89,8 @@ sentence = conversion <|> define
 
 
 boundary :: Parser Orthography
-boundary = (char '^' >> return (Pos Boundary)) <|> try(char '!' >> spaces' >> char '^' >> return (Neg Boundary))
+boundary = (char '^' >> return (Pos $ Res Boundary)) 
+ <|> try(char '!' >> spaces' >> char '^' >> return (Neg $ Res Boundary))
 
 -- FIXME: Escape sequence not yet implemented
 slash_string :: Parser Phoneme

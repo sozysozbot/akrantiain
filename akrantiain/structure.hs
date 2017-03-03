@@ -6,6 +6,7 @@ module Akrantiain.Structure
 ,Orthography(..)
 ,Phoneme(..)
 ,Candidate(..)
+,Resolved(..)
 ,Identifier(..)
 ,Quote(..)
 ) where
@@ -14,7 +15,8 @@ newtype Candidates = C [Candidate] deriving(Show, Eq, Ord)
 data Sentence = Conversion [Orthography] [Phoneme] | Define Identifier [Candidates] deriving(Show, Eq, Ord)
 data Orthography = Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)
 data Phoneme = Dollar Int | Slash String deriving(Show, Eq, Ord)
-data Candidate = Boundary | Quo Quote | Ide Identifier deriving(Show, Eq, Ord)
+data Candidate = Res Resolved | Ide Identifier deriving(Show, Eq, Ord)
+data Resolved = Boundary | Quo Quote deriving(Show, Eq, Ord)
 newtype Identifier = Id String deriving(Show, Eq, Ord)
 newtype Quote = Quote String deriving(Show, Eq, Ord)
 {-
