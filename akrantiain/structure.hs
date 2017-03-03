@@ -9,8 +9,10 @@ module Akrantiain.Structure
 ,Resolved(..)
 ,Identifier(..)
 ,Quote(..)
+,Resolveds(..)
 ) where
 
+newtype Resolveds = R [Resolved]
 newtype Candidates = C [Candidate] deriving(Show, Eq, Ord)
 data Sentence = Conversion [Orthography] [Phoneme] | Define Identifier [Candidates] deriving(Show, Eq, Ord)
 data Orthography = Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)

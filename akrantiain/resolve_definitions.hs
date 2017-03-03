@@ -16,10 +16,10 @@ data SemanticError = E {errNum :: Int, errStr :: String} deriving(Show, Eq, Ord)
 candids_to_quotes
 
 input:
-vowel = "a" | "i"; conson = "b" | "c"; syll = conson vowel | vowel
+vowel = "a" | "i"; conson = "b" | ^ "c"; syll = conson vowel | vowel
 
 output:
-vowel = "a" | "i"; conson = "b" | "c"; syll = "b" "a" | "c" "a" | "b" "i" | "c" "i" | "a" | "i"
+vowel = "a" | "i"; conson = "b" | ^ "c"; syll = "b" "a" | ^ "c" "a" | "b" "i" | ^ "c" "i" | "a" | "i"
 
 -}
 
