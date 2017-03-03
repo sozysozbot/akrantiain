@@ -14,7 +14,7 @@ newtype Candidates = C [Candidate] deriving(Show, Eq, Ord)
 data Sentence = Conversion [Orthography] [Phoneme] | Define Identifier [Candidates] deriving(Show, Eq, Ord)
 data Orthography = Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)
 data Phoneme = Dollar Int | Slash String deriving(Show, Eq, Ord)
-data Candidate = Boundary | Fixme (Either Quote Identifier ) deriving(Show, Eq, Ord)
+data Candidate = Boundary | Quo Quote | Ide Identifier deriving(Show, Eq, Ord)
 newtype Identifier = Id String deriving(Show, Eq, Ord)
 newtype Quote = Quote String deriving(Show, Eq, Ord)
 {-

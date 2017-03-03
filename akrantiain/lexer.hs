@@ -26,7 +26,7 @@ backquoted_string = do
   char '`'
   str <- many(noneOf "`\n")
   char '`'
-  return $ fmap Pos [Boundary, (Fixme . Left . Quote) str, Boundary] 
+  return $ fmap Pos [Boundary, (Quo . Quote) str, Boundary] 
 
 spaces' :: Parser ()
 spaces' = skipMany $ satisfy (\a -> isSpace a && a /= '\n')
@@ -62,7 +62,7 @@ sent_terminate = eof <|> comment
   
 
 candidate :: Parser Candidate
-candidate = try(fmap (Fixme . Left) quoted_string) <|> try(fmap (Fixme . Right) identifier)
+candidate = try(fmap Quo quoted_string) <|> try(fmap Ide identifier)
   
 
 conversion :: Parser Sentence

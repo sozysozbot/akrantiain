@@ -6,7 +6,7 @@ module Akrantiain.Resolve_definitions
 ) where
 
 import Akrantiain.Structure
-import qualified Data.Set as S
+-- import qualified Data.Set as S
 import qualified Data.Map as M
 data SemanticError = E {errNum :: Int, errStr :: String} deriving(Show, Eq, Ord)
 
