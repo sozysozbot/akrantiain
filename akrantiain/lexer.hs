@@ -62,14 +62,14 @@ sent_terminate = eof <|> comment
   
 
 candidate :: Parser Candidate
-candidate = try(fmap (Res . Quo) quoted_string) <|> try(fmap Ide identifier)
+candidate = try(fmap (Res . Quo) quoted_string) <|> try(fmap Ide identifier) <|> (char '^' >> return (Res Boundary))
   
 
 conversion :: Parser Sentence
 conversion = do 
   orthos <- try $ do
    spaces'
-   let ortho = fmap (:[]) ((char '^' >> return (Pos $ Res Boundary)) <|> try(char '!' >> spaces' >> char '^' >> return (Neg $ Res Boundary)) <|> fmap Pos candidate <|> try(fmap Neg $ char '!' >> spaces' >> candidate)) <|> backquoted_string
+   let ortho = fmap (:[]) (fmap Pos candidate <|> try(fmap Neg $ char '!' >> spaces' >> candidate)) <|> backquoted_string
    orthos' <- many(try$ortho <* spaces')
    string "->"
    return $ concat orthos'
