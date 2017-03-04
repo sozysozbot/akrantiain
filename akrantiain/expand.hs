@@ -30,12 +30,24 @@ expand sents' = do
  sents <- check_length sents'
  (orthoset, identmap) <- split sents
  newMap <- candids_to_quotes identmap
- return $ do{
-      (phonemes, ortho_arr) <- S.toList orthoset;
-      orthos' <- f newMap ortho_arr;
-      return $ Conv orthos' phonemes
-      }
+ u <- sequence $ map (func' newMap) (S.toList orthoset)
+ return $ concat u 
 
+func' newMap (phonemes, ortho_arr) = (>>= \orthos' -> return (Conv orthos' phonemes)) <$> f' newMap ortho_arr 
+
+
+f' :: M.Map Identifier (Set Resolveds) -> Array Orthography -> Either SemanticError (Set (Array Orthography'))
+f' identmap ortho_arr = do -- Either
+ arr <- sequence[g ortho | ortho <- ortho_arr]
+ return $ sequence arr 
+ where
+  g :: Orthography -> Either SemanticError [Orthography']
+  g (Neg c) = map (Neg' . unR) <$> h c 
+  g (Pos c) = map (Pos' . unR) <$> h c
+  h (Res reso) = Right [ R[reso] ]
+  h (Ide ident@(Id i)) = case M.lookup ident identmap of 
+   Nothing -> Left $ E{errNum = 4, errStr = "unresolved identifier {" ++ i ++ "}"}
+   Just v  -> Right v
 
 -- identmap: v --> [R ["a"], R ["o", "e"] ]
 -- ortho_arr : [Pos "i", Pos v, Neg "r"]
