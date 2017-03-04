@@ -10,11 +10,10 @@ module Akrantiain.Lexer
 ,sentences
 ) where
 
-import Text.Parsec 
+import Text.Parsec hiding(spaces)
 
 import Control.Applicative ((<$>),(<*))
 import Data.Char (isSpace)
-import Text.Parsec (char, oneOf, (<|>), parseTest)
 import Text.Parsec.String (Parser)
 import Data.Maybe (catMaybes)
 import Control.Monad(void)
@@ -27,14 +26,14 @@ backquoted_string = do
   char '`'
   str <- many(noneOf "`\n")
   char '`'
-  return [Boundary, (Pos . Left . Quote) str, Boundary] 
+  return $ fmap (Pos . Res) [Boundary, (Quo . Quote) str, Boundary] 
 
 spaces' :: Parser ()
 spaces' = skipMany $ satisfy (\a -> isSpace a && a /= '\n')
 
 
 
-sentences :: Parser [Sentence]
+sentences :: Parser (Set Sentence)
 sentences = do
  sents <- many (try(comment >> return Nothing) <|> try(fmap Just sentence))
  eof
@@ -53,7 +52,7 @@ define = do
    char '='
    return ident'
   spaces'
-  let candidates = try $ many(try $ try candidate <* spaces')
+  let candidates = fmap C $ try $ many(try $ try candidate <* spaces')
   cands_arr <- try candidates `sepBy` try(char '|' >> spaces') 
   sent_terminate
   return $ Define ident cands_arr
@@ -63,7 +62,7 @@ sent_terminate = eof <|> comment
   
 
 candidate :: Parser Candidate
-candidate = try(fmap Left quoted_string) <|> try(fmap Right identifier)
+candidate = try(fmap (Res . Quo) quoted_string) <|> try(fmap Ide identifier)
   
 
 conversion :: Parser Sentence
@@ -90,9 +89,8 @@ sentence = conversion <|> define
 
 
 boundary :: Parser Orthography
-boundary = do
-  char '^'
-  return Boundary
+boundary = (char '^' >> return (Pos $ Res Boundary)) 
+ <|> try(char '!' >> spaces' >> char '^' >> return (Neg $ Res Boundary))
 
 -- FIXME: Escape sequence not yet implemented
 slash_string :: Parser Phoneme

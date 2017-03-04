@@ -1,20 +1,29 @@
 --{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 
 module Akrantiain.Structure
-(Candidates
+(Candidates(..)
 ,Sentence(..)
 ,Orthography(..)
 ,Phoneme(..)
-,Candidate
+,Candidate(..)
+,Resolved(..)
 ,Identifier(..)
 ,Quote(..)
+,Resolveds(..)
+,Set
+,Array
 ) where
+import Prelude hiding (undefined)
 
-type Candidates = [Candidate]
-data Sentence = Conversion [Orthography] [Phoneme] | Define Identifier [Candidates] deriving(Show, Eq, Ord)
-data Orthography = Boundary | Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)
+type Set a = [a]
+type Array a = [a]
+newtype Resolveds = R{ unR ::(Array Resolved) } deriving(Show, Eq, Ord)
+newtype Candidates = C(Array Candidate) deriving(Show, Eq, Ord)
+data Sentence = Conversion (Array Orthography) (Array Phoneme) | Define Identifier (Set Candidates) deriving(Show, Eq, Ord)
+data Orthography = Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)
 data Phoneme = Dollar Int | Slash String deriving(Show, Eq, Ord)
-type Candidate = Either Quote Identifier
+data Candidate = Res Resolved | Ide Identifier deriving(Show, Eq, Ord)
+data Resolved = Boundary | Quo Quote deriving(Show, Eq, Ord)
 newtype Identifier = Id String deriving(Show, Eq, Ord)
 newtype Quote = Quote String deriving(Show, Eq, Ord)
 {-
