@@ -50,7 +50,7 @@ single_cons = "b" | "c" | "d" | "f" | "g" | "h" | "j" | "k" | "l" | "m" | "n" | 
 "k" front_v -> /ɕ/ $2
 "k" -> /k/
 
-"sk" front_v -> /ɧ/
+"sk" front_v -> /ɧ/ $2
 "sk" -> /sk/
 
 `och` -> /ɔ/ ## full word; equivalent to ^ "och" ^
