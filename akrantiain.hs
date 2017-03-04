@@ -14,9 +14,15 @@ main = do
    handle <- openFile fname ReadMode 
    hSetEncoding handle utf8
    input <- hGetContents handle
-   case runParser sentences () fname input of
-    Left err -> hPutStrLn stderr $ show err
-    Right a -> print a
+   runParser sentences () fname input >>>= \sents ->
+    expand sents >>>= \conv2_arr -> 
+    part2 conv2_arr
+    
 
+(>>>=) :: (Show a) => Either a b -> ( b -> IO ()) -> IO ()
+Left  a >>>= _  = hPutStrLn stderr $ show a
+Right b >>>= f  = f b
 
-
+part2 :: [Conv2] -> IO ()
+part2 conv2_arr = do
+ print conv2_arr

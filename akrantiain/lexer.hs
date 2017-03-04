@@ -33,7 +33,7 @@ spaces' = skipMany $ satisfy (\a -> isSpace a && a /= '\n')
 
 
 
-sentences :: Parser [Sentence]
+sentences :: Parser (Set Sentence)
 sentences = do
  sents <- many (try(comment >> return Nothing) <|> try(fmap Just sentence))
  eof

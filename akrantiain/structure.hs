@@ -10,11 +10,16 @@ module Akrantiain.Structure
 ,Identifier(..)
 ,Quote(..)
 ,Resolveds(..)
+,Set
+,Array
 ) where
 import Prelude hiding (undefined)
-newtype Resolveds = R [Resolved]
-newtype Candidates = C [Candidate] deriving(Show, Eq, Ord)
-data Sentence = Conversion [Orthography] [Phoneme] | Define Identifier [Candidates] deriving(Show, Eq, Ord)
+
+type Set a = [a]
+type Array a = [a]
+newtype Resolveds = R{ unR ::(Array Resolved) }
+newtype Candidates = C(Array Candidate) deriving(Show, Eq, Ord)
+data Sentence = Conversion (Array Orthography) (Array Phoneme) | Define Identifier (Set Candidates) deriving(Show, Eq, Ord)
 data Orthography = Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)
 data Phoneme = Dollar Int | Slash String deriving(Show, Eq, Ord)
 data Candidate = Res Resolved | Ide Identifier deriving(Show, Eq, Ord)
