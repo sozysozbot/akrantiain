@@ -1,6 +1,6 @@
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 
-module Akrantiain.Cook
+module Akrantiain.Normalize
 (normalize
 ,Fixme(..)
 ) where
@@ -10,3 +10,5 @@ import Akrantiain.Structure
 type Fixme = ()
 normalize :: Set Conv2 -> Fixme
 normalize = undefined
+
+
