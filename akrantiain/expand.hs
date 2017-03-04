@@ -28,7 +28,7 @@ data Orthography' = Neg' [Resolved] | Pos' [Resolved] deriving(Show, Eq, Ord)
 -- newtype Identifier = Id String deriving(Show, Eq, Ord)
 -- newtype Quote = Quote String deriving(Show, Eq, Ord)
 
-expand :: Set Sentence -> Either SemanticError [Conv2]
+expand :: Set Sentence -> Either SemanticError (Set Conv2)
 expand sents = do 
  (orthoset, identmap) <- split sents
  newMap <- candids_to_quotes identmap

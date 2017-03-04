@@ -4,6 +4,7 @@ import Text.Parsec
 import System.Environment
 import System.IO
 import Akrantiain.Expand
+import Akrantiain.Cook
 
 main :: IO ()
 main = do
