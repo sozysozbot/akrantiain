@@ -12,8 +12,10 @@ module Akrantiain.Structure
 ,Resolveds(..)
 ,Set
 ,Array
+,ToSource(..)
 ) where
 import Prelude hiding (undefined)
+import Data.List(intercalate)
 
 type Set a = [a]
 type Array a = [a]
@@ -26,16 +28,33 @@ data Candidate = Res Resolved | Ide Identifier deriving(Show, Eq, Ord)
 data Resolved = Boundary | Quo Quote deriving(Show, Eq, Ord)
 newtype Identifier = Id String deriving(Show, Eq, Ord)
 newtype Quote = Quote String deriving(Show, Eq, Ord)
-{-
-Sentence(Conversion) : "a" consonant ^ "b" -> /a/ $2 $3 /v/
-Sentence(Define) : consonant = "a" | "b" "d" | cons2 | co "c" co 
-Orthography(Boundary) : ^
-Orthography(Neg Candidate) : !"a"   or   !cons
-Orthography(Pos Candidate) : "a"   or   cons
-Phoneme(Dollar Int) : $2
-Phoneme(Slash String): /v/
--}
-{-
-Sentence(Conversion) : "a" consonant ^ "b" -> /a/ $2 $3 /v/
-Sentence(Define) : consonant = "a" | "b" "d" | cons2 | co "c" co 
--}
+
+class ToSource a where
+ toSource :: a -> String
+
+instance ToSource Phoneme where
+ toSource (Dollar i) = '$':show i
+ toSource (Slash str) = '/':str++"/"
+
+instance ToSource Resolved where
+ toSource Boundary = "^"
+ toSource (Quo (Quote str)) = '"':str++"\""
+
+instance ToSource Identifier where
+ toSource (Id str) = str
+
+instance ToSource Candidate where
+ toSource (Res res) = toSource res
+ toSource (Ide ide) = toSource ide
+
+instance ToSource Candidates where
+ toSource (C arr) = intercalate " " (map toSource arr)
+
+instance ToSource Orthography where
+ toSource (Pos cand) = toSource cand
+ toSource (Neg cand) = '!':toSource cand
+
+instance ToSource Sentence where
+ toSource (Conversion orthos phonemes) = intercalate " "(map toSource orthos) ++ " -> " ++ intercalate " " (map toSource phonemes) ++ ";"
+ toSource (Define id candids_set) = toSource id ++ " = " ++ intercalate " | " (map toSource candids_set)
+
