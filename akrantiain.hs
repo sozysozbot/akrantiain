@@ -5,6 +5,7 @@ import System.Environment
 import System.IO
 import Akrantiain.Expand
 import Akrantiain.Cook
+import Akrantiain.Normalize
 
 main :: IO ()
 main = do

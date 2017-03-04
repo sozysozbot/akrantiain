@@ -11,7 +11,6 @@ import Akrantiain.Structure
 import Akrantiain.Resolve_definitions
 import qualified Data.Set as S
 import qualified Data.Map as M
-import Akrantiain.Resolve_definitions
 import Data.Maybe(fromJust)
 
 data Conv2 = Conv (Array Orthography') [Phoneme] deriving(Show, Eq, Ord)
