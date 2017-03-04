@@ -11,7 +11,6 @@ import Akrantiain.Structure
 import Akrantiain.Resolve_definitions
 import qualified Data.Set as S
 import qualified Data.Map as M
-import Data.Maybe(fromJust)
 import Data.List(intercalate)
 
 data Conv2 = Conv (Array Orthography') [Phoneme] deriving(Show, Eq, Ord)
@@ -52,12 +51,12 @@ f' identmap ortho_arr = do -- Either
 -- identmap: v --> [R ["a"], R ["o", "e"] ]
 -- ortho_arr : [Pos "i", Pos v, Neg "r"]
 -- result : [ [Pos' ["i"], Pos' ["a"], Neg' ["r"]], [Pos' ["i"], Pos' ["o", "e"], Neg' ["r"]] ]
-f :: M.Map Identifier (Set Resolveds) -> Array Orthography -> Set (Array Orthography')
-f identmap ortho_arr = sequence $ map g ortho_arr where
-  g (Neg c) = map (Neg' . unR) $ h c
-  g (Pos c) = map (Pos' . unR) $ h c
-  h (Res reso) = [ R[reso] ]
-  h (Ide ident) = fromJust $ M.lookup ident identmap
+-- f :: M.Map Identifier (Set Resolveds) -> Array Orthography -> Set (Array Orthography')
+-- f identmap ortho_arr = sequence $ map g ortho_arr where
+  -- g (Neg c) = map (Neg' . unR) $ h c
+  -- g (Pos c) = map (Pos' . unR) $ h c
+  -- h (Res reso) = [ R[reso] ]
+  -- h (Ide ident) = fromJust $ M.lookup ident identmap
 -- g: 
 -- Pos "i" -> [ Pos' ["i"] ]
 -- Neg v -> [ Neg' ["a"] , Neg' ["o", "e"] ]
