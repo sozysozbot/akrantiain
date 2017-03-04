@@ -69,7 +69,7 @@ conversion :: Parser Sentence
 conversion = do 
   orthos <- try $ do
    spaces'
-   let ortho = fmap (:[]) (boundary <|> fmap Pos candidate <|> try(fmap Neg $ char '!' >> candidate)) <|> backquoted_string
+   let ortho = fmap (:[]) ((char '^' >> return (Pos $ Res Boundary)) <|> try(char '!' >> spaces' >> char '^' >> return (Neg $ Res Boundary)) <|> fmap Pos candidate <|> try(fmap Neg $ char '!' >> spaces' >> candidate)) <|> backquoted_string
    orthos' <- many(try$ortho <* spaces')
    string "->"
    return $ concat orthos'
@@ -85,12 +85,6 @@ sentence = conversion <|> define
 
 
 
-
-
-
-boundary :: Parser Orthography
-boundary = (char '^' >> return (Pos $ Res Boundary)) 
- <|> try(char '!' >> spaces' >> char '^' >> return (Neg $ Res Boundary))
 
 -- FIXME: Escape sequence not yet implemented
 slash_string :: Parser Phoneme
