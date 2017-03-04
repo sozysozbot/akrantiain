@@ -12,6 +12,7 @@ import Akrantiain.Resolve_definitions
 import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.List(intercalate)
+import Control.Monad(mapM, forM)
 
 data Conv2 = Conv (Array Orthography') [Phoneme] deriving(Show, Eq, Ord)
 
@@ -29,15 +30,16 @@ expand sents' = do
  sents <- check_length sents'
  (orthoset, identmap) <- split sents
  newMap <- candids_to_quotes identmap
- u <- sequence $ map (func' newMap) (S.toList orthoset)
+ u <- forM (S.toList orthoset) $ \(phonemes, ortho_arr) -> do -- Either
+  x1 <- f' newMap ortho_arr 
+  return [Conv orthos' phonemes | orthos' <- x1]
  return $ concat u 
 
-func' newMap (phonemes, ortho_arr) = (>>= \orthos' -> return (Conv orthos' phonemes)) <$> f' newMap ortho_arr 
 
 
 f' :: M.Map Identifier (Set Resolveds) -> Array Orthography -> Either SemanticError (Set (Array Orthography'))
 f' identmap ortho_arr = do -- Either
- arr <- sequence[g ortho | ortho <- ortho_arr]
+ arr <- mapM g ortho_arr
  return $ sequence arr 
  where
   g :: Orthography -> Either SemanticError [Orthography']
