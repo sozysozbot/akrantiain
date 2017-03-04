@@ -17,7 +17,7 @@ import Prelude hiding (undefined)
 
 type Set a = [a]
 type Array a = [a]
-newtype Resolveds = R{ unR ::(Array Resolved) }
+newtype Resolveds = R{ unR ::(Array Resolved) } deriving(Show, Eq, Ord)
 newtype Candidates = C(Array Candidate) deriving(Show, Eq, Ord)
 data Sentence = Conversion (Array Orthography) (Array Phoneme) | Define Identifier (Set Candidates) deriving(Show, Eq, Ord)
 data Orthography = Neg Candidate | Pos Candidate deriving(Show, Eq, Ord)
