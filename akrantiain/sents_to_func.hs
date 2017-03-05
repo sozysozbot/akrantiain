@@ -4,10 +4,6 @@ module Akrantiain.Sents_to_func
 (sents_to_func
 ) where
 
-import Akrantiain.Lexer
-import Text.Parsec
-import System.Environment
-import System.IO
 import Akrantiain.Expand
 import Akrantiain.Cook
 import Akrantiain.Normalize
