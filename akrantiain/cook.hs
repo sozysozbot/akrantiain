@@ -16,9 +16,10 @@ data Fixme3 = Fixme3
 type Input = String
 type Output = Either RuntimeError String
 cookBy :: Fixme3 -> Either SemanticError( Input -> Output )
-cookBy foobar = Right func -- ***FIXME***
- where 
-  func x
-   | x == "wa" = Right "わ"
-   | x == "wu" = Left $ RE{errNo = 1030, errMsg = "wu is not good"}
-   | otherwise = Right x
+cookBy foobar = undefined
+-- cookBy foobar = Right func -- ***FIXME***
+ -- where 
+  -- func x
+   -- | x == "wa" = Right "わ"
+   -- | x == "wu" = Left $ RE{errNo = 1030, errMsg = "wu is not good"}
+   -- | otherwise = Right x
