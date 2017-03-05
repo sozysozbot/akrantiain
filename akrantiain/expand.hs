@@ -4,7 +4,7 @@ module Akrantiain.Expand
 (SemanticError(..)
 ,expand
 ,Conv2(..)
-,Orthography'
+,Orthography'(..)
 ) where
 
 import Akrantiain.Structure
