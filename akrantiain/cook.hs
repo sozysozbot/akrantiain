@@ -2,11 +2,16 @@
 
 module Akrantiain.Cook
 (cookBy
+,Input
+,Output
+,cookBy
+,Fixme3(..)
 ) where
 import Akrantiain.Expand
 import Akrantiain.Structure
 
+data Fixme3 = Fixme3 
 type Input = String
 type Output = String
-cookBy :: Set Conv2 -> Input -> Either SemanticError Output
-cookBy conv_arr = undefined
+cookBy :: Fixme3 -> Either SemanticError( Input -> Output )
+cookBy foobar = Right id -- ***FIXME***
