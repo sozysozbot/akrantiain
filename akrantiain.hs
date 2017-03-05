@@ -3,10 +3,7 @@ import Akrantiain.Lexer
 import Text.Parsec
 import System.Environment
 import System.IO
-import Akrantiain.Expand
-import Akrantiain.Cook
-import Akrantiain.Normalize
-import Akrantiain.Structure
+import Akrantiain.Sents_to_func
 
 main :: IO ()
 main = do
@@ -18,22 +15,12 @@ main = do
    hSetEncoding handle utf8
    input <- hGetContents handle
    runParser sentences () fname input >>>= \sents -> 
-    getFunc sents >>>= \func -> interact func
+    sents_to_func sents >>>= \func -> interact func
     
 
 (>>>=) :: (Show a) => Either a b -> ( b -> IO ()) -> IO ()
 Left  a >>>= _  = hPutStrLn stderr $ show a
 Right b >>>= f  = f b
-
-
-getFunc :: Set Sentence -> (Either SemanticError (Input -> Output))
-getFunc sents = do
- conv2_arr <- expand sents
- foobar <- mysterious conv2_arr
- cookBy foobar
-
-mysterious :: [Conv2] -> Either SemanticError Fixme3
-mysterious cccccccc = Right Fixme3
 
 
 
