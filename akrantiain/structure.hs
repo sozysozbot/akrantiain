@@ -1,4 +1,4 @@
---{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
+{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 
 module Akrantiain.Structure
 (Candidates(..)
@@ -56,5 +56,5 @@ instance ToSource Orthography where
 
 instance ToSource Sentence where
  toSource (Conversion orthos phonemes) = intercalate " "(map toSource orthos) ++ " -> " ++ intercalate " " (map toSource phonemes) ++ ";"
- toSource (Define id candids_set) = toSource id ++ " = " ++ intercalate " | " (map toSource candids_set)
+ toSource (Define ide candids_set) = toSource ide ++ " = " ++ intercalate " | " (map toSource candids_set)
 

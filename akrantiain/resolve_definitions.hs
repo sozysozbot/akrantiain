@@ -35,7 +35,7 @@ reduce_1 :: Identifier -> Temp -> Either SemanticError Temp
 reduce_1 ident@(Id i) temp@(cand_map, quot_map, stack) = case M.lookup ident cand_map of
  Nothing -> case M.lookup ident quot_map of 
   Nothing -> Left $ E{errNum = 1, errStr = "unresolved identifier {" ++ i ++ "}"}
-  Just resolveds_list -> return temp
+  Just _ -> return temp
  Just candids_list -> if ident `elem` stack 
   then Left $ E{errNum = 2, errStr = "recursive definition regarding identifier {" ++ i ++ "}"} 
   else do
