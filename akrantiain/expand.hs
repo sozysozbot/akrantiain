@@ -20,7 +20,7 @@ data Conv2 = Conv (Array Orthography') [Phoneme] deriving(Show, Eq, Ord)
 data Orthography' = Neg' [Resolved] | Pos' [Resolved] deriving(Show, Eq, Ord)
 
 check_length :: Set Sentence -> Either SemanticError (Set Sentence)
-check_length sents = case [ (orthos, phonemes) | Conversion orthos phonemes <- sents, length[()|Pos _ <- orthos] /= length phonemes] of
+check_length sents = case [ (orthos, phonemes) | Conversion orthos phonemes <- sents, (length[()|Pos _ <- orthos] - length[()|Pos(Res Boundary) <- orthos ]) /= length phonemes] of
  [] -> return sents
  arr  -> Left $ E{errNum = 3, errStr = "mismatched number of concrete terms in left- and right-hand side of "++ intercalate ", " ["{"++ toSource (Conversion os ps)++"}" | (os,ps) <- arr]}
 
