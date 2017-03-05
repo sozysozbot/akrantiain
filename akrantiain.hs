@@ -30,7 +30,7 @@ interact' f = do
  forM_ (lines s) $ \line -> do
   case f line of 
    Right str -> putStrLn str
-   Left a -> hPutStrLn stderr $ show a
+   Left a -> hPutStrLn stderr (show a) >> putStrLn ""
 
 
  
